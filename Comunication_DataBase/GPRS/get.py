@@ -30,12 +30,12 @@ def web():
     phone.write('AT+HTTPPARA="CID",1\r')
     sim800_responde()
 
-    phone.write('AT+HTTPPARA="URL","https://google.com.br"\r')
+    phone.write('AT+HTTPPARA="URL","https://transports-rest-api.herokuapp.com/transport/1"\r')
     sim800_responde()
   
     phone.write('AT+HTTPACTION=0\r')
     sim800_responde()
-    time.sleep(3)
+    time.sleep(7)
 
     phone.write('AT+HTTPREAD\r')
     sim800_responde()

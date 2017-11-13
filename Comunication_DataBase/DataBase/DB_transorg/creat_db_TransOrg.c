@@ -26,7 +26,7 @@ int main(int argc, char **argv)
       exit(1);
   }
 
-  if (mysql_query(con, "CREATE DATABASE transorg"))
+  if (mysql_query(con, "CREATE DATABASE IF NOT EXISTS transorg"))
   {
       fprintf(stderr, "%s\n", mysql_error(con));
       mysql_close(con);

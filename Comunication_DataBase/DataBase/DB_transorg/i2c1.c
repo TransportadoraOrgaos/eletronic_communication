@@ -19,7 +19,7 @@ void ctrl_c(int sig)
 int main(void)
 {
 	unsigned char user_input=1, slave_addr=0x0F;
-	char ret[30];
+	char ret[15];
 	float lat;
 	signal(SIGINT, ctrl_c);
 	i2c_fd = open("/dev/i2c-1", O_RDWR);
@@ -37,8 +37,10 @@ int main(void)
 		{       
 			write(i2c_fd, &user_input, 1);
 			sleep(3);
-			read(i2c_fd, ret, 30);
-
+			read(i2c_fd, ret, 15);
+			lat = atof(ret);
+		printf("%f\n", lat);
+		TableCoordinate(lat,12.45);
 		printf("%s\n", 	ret);
 		}
 		puts("");
@@ -46,8 +48,9 @@ int main(void)
 
 	lat = atof(ret);
 
-	TableCoordinate(2345.8907657, 12.123456);
-	printf("%f",lat);
+	//TableCoordinate(lat, 12.123456);
+	printf("\nValor da string recebida %f\n",lat);
 	close(i2c_fd);
+	return 0;
 
 }

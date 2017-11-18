@@ -5,13 +5,13 @@ void finish_with_error(MYSQL *con)
 {
   fprintf(stderr, "%s\n", mysql_error(con));
   mysql_close(con);
-  exit(1);        
+  exit(1);
 }
 
 int main(int argc, char **argv)
-{      
+{
   MYSQL *con = mysql_init(NULL);
-  
+ 
   if (con == NULL)
   {
       fprintf(stderr, "mysql_init() failed\n");
@@ -24,7 +24,7 @@ int main(int argc, char **argv)
       finish_with_error(con);
   }    
   
-  if (mysql_query(con, "SELECT * FROM TransOrg")) 
+  if (mysql_query(con, "SELECT * FROM coordinate")) 
   {
       finish_with_error(con);
   }
@@ -54,3 +54,4 @@ int main(int argc, char **argv)
   
   exit(0);
 }
+

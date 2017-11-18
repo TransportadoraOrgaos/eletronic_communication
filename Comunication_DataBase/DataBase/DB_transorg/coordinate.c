@@ -1,5 +1,8 @@
 #include <my_global.h>
 #include <mysql.h>
+#include "coordinate.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void finish_with_error(MYSQL *con)
 {
@@ -8,12 +11,18 @@ void finish_with_error(MYSQL *con)
   exit(1);
 }
 
-float TableCoordinate(float lat, float lon)
+void TableCoordinate(float lat, float lon)
 {
   MYSQL *con = mysql_init(NULL);
 
   char string[15] = {"Coordinates"};
   char q[200];
+  char lati[15];
+  char longi[15];
+
+  sprintf(lati, "%f", lat);
+  sprintf(longi, "%f", lon);
+
   float temp = 1.23;
   if (con == NULL)
   {
@@ -27,10 +36,10 @@ float TableCoordinate(float lat, float lon)
       finish_with_error(con);
   }
 
-  if (mysql_query(con, "CREATE TABLE IF NOT EXISTS coordinate (Name TEXT,lat FLOAT, Lon FLOAT)")) {
+  if (mysql_query(con, "CREATE TABLE IF NOT EXISTS coordinate (Name TEXT,Lat TEXT, Lon TEXT)")) {
       finish_with_error(con);
   }
-  sprintf(q, "INSERT INTO coordinate Values('%s', %.2f, %.2f)",  string, lat, lon);
+  sprintf(q, "INSERT INTO coordinate Values('%s', '%s', '%s')",  string, lati, longi);
   if (mysql_query(con, q)) 
       finish_with_error(con);
 

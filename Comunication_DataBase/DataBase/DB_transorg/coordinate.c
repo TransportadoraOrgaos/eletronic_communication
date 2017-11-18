@@ -39,6 +39,8 @@ void TableCoordinate(float lat, float lon)
   if (mysql_query(con, "CREATE TABLE IF NOT EXISTS coordinate (Name TEXT,Lat TEXT, Lon TEXT)")) {
       finish_with_error(con);
   }
+
+  printf("Latitude: %f, Longitude: %f\n", lat, lon);
   sprintf(q, "INSERT INTO coordinate Values('%s', '%s', '%s')",  string, lati, longi);
   if (mysql_query(con, q)) 
       finish_with_error(con);
@@ -47,3 +49,4 @@ void TableCoordinate(float lat, float lon)
   mysql_close(con);
 
 }
+

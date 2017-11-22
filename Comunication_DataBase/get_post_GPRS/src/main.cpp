@@ -7,12 +7,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define Slave_Address 0x0F
+
 unsigned long lastRunTime = 0;
 unsigned long waitForRunTime = 0;
 
 unsigned int RX_PIN = 7;
 unsigned int TX_PIN = 8;
 unsigned int RST_PIN = 12;
+int receive = 0;
 char lat[12];
 char lon[12];
 char coordinates[30];
@@ -22,8 +25,46 @@ HTTP http(9600, RX_PIN, TX_PIN, RST_PIN);
 SoftwareSerial mySerial(TX_PIN, RX_PIN);
 DFRobot_SIM808 sim808(&mySerial);
 void getGPS();
+void receiveData(int num);
+void sendData();
+void print(const __FlashStringHelper *message, int code = -1);
+bool shouldTrackTimeEntry();
+void trackTimeEntry();
 
-// functions
+
+
+// the setup routine runs once when you press reset:
+void setup() {
+  Serial.begin(9600);
+  while(!Serial);
+  Serial.println("Starting!");
+  Wire.begin(Slave_Address);
+  Wire.onReceive(receiveData);
+  Wire.onRequest(sendData);
+}
+
+// the loop routine runs over and over again forever:
+void loop() {
+	if (receive == 1){
+			 while(!sim808.init())//turn on gps
+  				{
+      				Serial.print("Sim808 init error\r\n");
+      					delay(1000);
+ 				 }
+			delay(3000);	
+		getGPS(); //get coordinates
+		sim808.detachGPS(); //turn off gps
+		receive = 0;
+  }
+
+	if (receive == 2){
+  if (shouldTrackTimeEntry()) trackTimeEntry();
+	
+	receive = 0;
+	}
+}
+
+
 void print(const __FlashStringHelper *message, int code = -1){
   if (code != -1){
     Serial.print(message);
@@ -42,6 +83,7 @@ bool shouldTrackTimeEntry(){
   return elapsedTime >= waitForRunTime;
 }
 
+
 void trackTimeEntry(){
 
   char response[300];
@@ -52,7 +94,7 @@ void trackTimeEntry(){
   result = http.connect();
   print(F("HTTP connect: "), result);
 
-  sprintf(body, "{\"is_locked\": 1, \"date\": \"17/11/2017\",\"temperature\": 2.0, \"longitude\": \"-48.5134\", \"enable\":1, \"latitude\": \"-16.0090\", \"transport_id\": 50}");
+  sprintf(body, "{\"is_locked\": 1, \"date\": \"17/11/2017\",\"temperature\": 2.0, \"longitude\": \"%s\", \"enable\":1, \"latitude\": \"-16.0090\", \"transport_id\": 50}", lat);
 
   result = http.post("http://transports-rest-api.herokuapp.com/report/50", body, response);
   print(F("HTTP POST: "), result);
@@ -83,17 +125,7 @@ void trackTimeEntry(){
   print(F("HTTP disconnect: "), http.disconnect());
 }
 
-// the setup routine runs once when you press reset:
-void setup() {
-  Serial.begin(9600);
-  while(!Serial);
-  Serial.println("Starting!");
-}
 
-// the loop routine runs over and over again forever:
-void loop() {
-  if (shouldTrackTimeEntry()) trackTimeEntry();
-}
 
 void getGPS(){
 
@@ -113,4 +145,13 @@ void getGPS(){
   	  coord[i] = coordinates[i];
   	  }
 
+}
+
+void receiveData(int num){
+
+	receive = Wire.read();
+}
+
+void sendData(){
+	Wire.write(coord,30);
 }

@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <linux/ioctl.h>
+#include <linux/i2c-dev.h>
+
+int i2c_fd;
+
+int main(){
+
+  unsigned char rpi_addr = 0xDA, slave_addr = 0x0F;
+  unsigned char byte1, byte2, byte3, byte4;
+  int aux;
+  float temp, temperatura;
+  float test = 34.56;
+  i2c_fd = open("/dev/i2c-1", O_RDWR); //abre o arquivo que permite a comunicacao i2c
+  ioctl(i2c_fd, I2C_SLAVE, slave_addr); //RPI como master e outros como slave
+
+
+  read(i2c_fd, &byte1, 1);
+  read(i2c_fd, &byte2, 1);
+  read(i2c_fd, &byte3, 1);
+  read(i2c_fd, &byte4, 1)
+  aux = ((byte3 << 8) | byte4);
+  temp = (float)aux*0.0001;
+  aux = ((byte1 << 8) | byte4);
+  temp+=aux;
+  
+  aux = (unsigned int) test;  // aux = 46689, Pega somente a parte inteira da variável float (0 - 65536)
+  byte2 = aux;                          // byte2 = 0B01100001, pega apenas os primeros 8 bits
+  byte1 = (aux>>8);                     // byte1 = 0B10110110, pega os 8 ultimos bits
+  
+  // Ajustando o número depois da vírgula
+  test -= aux;                // Deixa apenas o número depois da vírgula
+  test *= 10000;              // Multiplica por 10k para pegar 4 dígitos após a vírgula
+  aux = (unsigned int) test;  // Pega somente o valor antes da vírgula
+  byte4 = aux;                          // byte2 = 0B00101110, pega apenas os primeros 8 bits
+  byte3 = (aux>>8);  
+
+  temperatura = temp;
+
+ printf("Temperatura: %.2f\n", temperatura);
+
+  close(i2c_fd);
+
+  return 0;
+}

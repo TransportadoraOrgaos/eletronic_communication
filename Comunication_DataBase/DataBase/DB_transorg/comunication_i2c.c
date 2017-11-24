@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <fcntl.h>
-#include <linux/ioctl.h>
+#include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
-
+#include <unistd.h>
+#include <string.h>
 #include "comunication_i2c.h"
 
 void i2c_init(char *slave_addr, int *i2c_fd){
@@ -14,20 +15,14 @@ void i2c_init(char *slave_addr, int *i2c_fd){
 
 }
 
-void i2c_data(int *i2c_fd, float *temperatura){
+void i2c_data(int *i2c_fd, char *recebido){
 
-  unsigned char  b[4];
-  int aux;
-  float temp;
+  unsigned char  b[30];
+  
 
-  read(*i2c_fd, b, 4);
+  read(*i2c_fd, b, 30);
 
-  aux = ((b[2] << 8) | b[3]);
-  temp = (float)aux*0.0001;
-  aux = ((b[0] << 8) | b[1]);
-  temp+=aux;
-
-  *temperatura = temp;
+ strcpy(recebido, b);
 }
 
 void i2c_close(int *i2c_fd){

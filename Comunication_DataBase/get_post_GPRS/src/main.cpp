@@ -99,7 +99,7 @@ void trackTimeEntry(){
   result = http.connect();
   print(F("HTTP connect: "), result);
 
-  sprintf(body, "{\"is_locked\": 1, \"date\": \"17/11/2017\",\"temperature\": 2.0, \"longitude\": \"%s\", \"enable\":1, \"latitude\": \"%s\", \"transport_id\": 50}", lon, lat);
+  sprintf(body, "{\"is_locked\": 1, \"date\": \"17/11/2017\",\"temperature\": 2.0, \"longitude\": \"222.78\", \"enable\":1, \"latitude\": \"-78.98\", \"transport_id\": 50}");
 
   result = http.post("http://transports-rest-api.herokuapp.com/report/50", body, response);
   print(F("HTTP POST: "), result);
@@ -133,10 +133,25 @@ void trackTimeEntry(){
 
 
 void getGPS(){
+	 
+  while(!sim808.attachGPS())
+  {
+    Serial.println("Open the GPS power failure");
+    delay(1000);
+  }
+  delay(3000);
 
+  Serial.println("Open the GPS power success");
+    
+  while(!sim808.getGPS())
+  {
+    
+  }
+	Serial.println("Start gps");
 	float la = sim808.GPSdata.lat;
 	float lo = sim808.GPSdata.lon;
-
+	Serial.println(la);
+	Serial.println(lo);
 	dtostrf(la, 4, 6, lat); //put float value of la into char array of lat. 4 = number of digits before decimal sign. 6 = number of digits after the decimal sign.
   	dtostrf(lo, 4, 6, lon); //put float value of lo into char array of lon
   	
@@ -149,12 +164,13 @@ void getGPS(){
   	for(int i = 0; coordinates[i]!='\0'; i++){
   	  coord[i] = coordinates[i];
   	  }
+	Serial.println(coordinates);
 
 }
 
 void receiveData(int num){
 
-	while (1 < Wire.available()) { // loop through all but the last
+	/*while (1 < Wire.available()) { // loop through all but the last
     	c[i] = Wire.read(); // receive byte as a character
     	Serial.print(c[i]);  
       	i++;    // print the character
@@ -165,10 +181,11 @@ void receiveData(int num){
         
   g = atof(k);
   a = atoi(c);
+  Serial.print("Valor de a: ");
   Serial.println(a);
-  Serial.println(g);
-  int x = Wire.read();    // receive byte as an integer
-  Serial.println(x);         // print the integer
+  Serial.println(g);*/
+  a = Wire.read();    // receive byte as an integer
+  Serial.println(a);         // print the integer
 }
 
 void sendData(){

@@ -17,29 +17,27 @@ def get_db_data():
     else:
         return data
 
-#Printa os valores do ultimo registro no terminal
-def print_data():
-    data = get_db_data()
-    print data[0] 
-    print data[1]
-
 #Post to API
 def api_post():
-    url = "https://transports-rest-api.herokuapp.com/reports"
+    data = get_db_data()
+    url = "https://transports-rest-api.herokuapp.com/report/" + str(data[6])
+    payload = "{\n\t\"date\": \""+ str(data[0]) +"\",\n\t\"latitude\": \""+ str(data[1]) +"\",\n\t\"longitude\": \"" + str(data[2]) + "\",\n\t\"temperature\": \"" + str(data[3]) + "\",\n\t\"is_locked\": " + str(data[4]) + ",\n\t\"transport_id\": " + str(data[6]) + ",\n\t\"enable\": "+ str(data[5]) +"\n}"
     headers = {'content-type':'application/json'}
     try:
-        response = requests.request("GET", url, headers=headers)
-        print(response.status_code)
+        response = requests.request("POST", url, data=payload, headers=headers)
     except ConnectionError as e:
         print("tentando bostar...")
         time.sleep(5)
         return api_post()
+    if response.status_code == 200 or response.status_code == 201:
+        print("SUCCESSFULLY sent to API")
+    else:
+        print("ERROR to send to API: " + response.status_code)
 
 #Delete data
 def delete_data():
     data = get_db_data()
     sql = 'DELETE FROM transorg WHERE date = ' + "'" + str(data[0]) + "'"
-    print(sql)
     try:
         cursor.execute(sql)
         db.commit()
@@ -49,7 +47,6 @@ def delete_data():
 
 while True:
     get_db_data()
-    print_data()
     api_post()
     delete_data()
     db.close()

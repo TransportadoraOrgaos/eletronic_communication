@@ -3,42 +3,61 @@ from requests.exceptions import ConnectionError
 
 
 
-db = MySQLdb.connect("localhost", "root", "root", "teste")
+while True:
 
-cursor = db.cursor()
+    def get_db_data():
 
-cursor.execute("SELECT * FROM teste")
+        global db
+        db = MySQLdb.connect("localhost", "root", "root", "transorg")
+        global cursor
+        cursor = db.cursor()
+        
+        cursor.execute("SELECT * FROM transorg")
+        data = cursor.fetchone()
 
-data = cursor.fetchone()
-print data[0]
-print data[1]
+        if not data:
+            print "Banco vazio"
+            time.sleep(3)
+            db.close()
+            return get_db_data()
+        else:
+            return data
 
-url = "https://transports-rest-api.herokuapp.com/reports"
-headers = {'content-type':'application/json'}
 
-def api_post():
+
+    data = get_db_data()
+
+
+    print data[0] 
+    print data[1]
+
+
+
+    url = "https://transports-rest-api.herokuapp.com/reports"
+    headers = {'content-type':'application/json'}
+
+    def api_post():
+        try:
+            response = requests.request("GET", url, headers=headers)
+            print(response.status_code)
+        except ConnectionError as e:
+            print("tentando bostar...")
+            time.sleep(5)
+            return api_post()
+
+
+    api_post()
+
+
+
+    sql = 'DELETE FROM transorg WHERE date = ' + "'" + str(data[0]) + "'"
+    print(sql)
+
     try:
-        response = requests.request("GET", url, headers=headers)
-        print(response.status_code)
-    except ConnectionError as e:
-        print("tentando bostar...")
-        time.sleep(5)
-        return api_post()
+        cursor.execute(sql)
+        db.commit()
+    except:
+        db.rollback()
 
 
-api_post()
-
-
-
-sql = 'DELETE FROM teste WHERE id = ' + str(data[0])
-
-try:
-    cursor.execute(sql)
-    db.commit()
-except:
-    db.rollback()
-
-
-db.close()
-
-
+    db.close()

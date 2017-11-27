@@ -17,6 +17,7 @@ unsigned int TX_PIN = 8;
 unsigned int RST_PIN = 12;
 char c[15];
 char k[15];
+unsigned char receive[200];
 int a = 0;
 int i = 0;
 int j = 0;
@@ -50,7 +51,7 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
-	if (a == 1){
+	/*if (a == 1){
 			 while(!sim808.init())//turn on gps
   				{
       				Serial.print("Sim808 init error\r\n");
@@ -60,13 +61,12 @@ void loop() {
 		getGPS(); //get coordinates
 		sim808.detachGPS(); //turn off gps
 		a = 0;
-  }
+  }*/
 
-	if (a == 2){
+	delay(10000);	
   if (shouldTrackTimeEntry()) trackTimeEntry();
 	
-	a = 0;
-	}
+	
 }
 
 
@@ -99,8 +99,8 @@ void trackTimeEntry(){
   result = http.connect();
   print(F("HTTP connect: "), result);
 
-  sprintf(body, "{\"is_locked\": 1, \"date\": \"17/11/2017\",\"temperature\": 2.0, \"longitude\": \"222.78\", \"enable\":1, \"latitude\": \"-78.98\", \"transport_id\": 50}");
-
+  //sprintf(body, "{\"is_locked\": 1, \"date\": \"17/11/2017\",\"temperature\": 2.0, \"longitude\": \"222.78\", \"enable\":1, \"latitude\": \"-78.98\", \"transport_id\": 50}");
+   sprintf(body, receive);
   result = http.post("http://transports-rest-api.herokuapp.com/report/50", body, response);
   print(F("HTTP POST: "), result);
   if (result == SUCCESS) {
@@ -170,13 +170,13 @@ void getGPS(){
 
 void receiveData(int num){
 
-	/*while (1 < Wire.available()) { // loop through all but the last
-    	c[i] = Wire.read(); // receive byte as a character
+	while (1 < Wire.available()) { // loop through all but the last
+    	receive[i] = Wire.read(); // receive byte as a character
     	Serial.print(c[i]);  
       	i++;    // print the character
   	}
   	i = 0;
-  for (j = 2; c[j]; j++)
+  /*for (j = 2; c[j]; j++)
         k[j-2] = c[j];
         
   g = atof(k);

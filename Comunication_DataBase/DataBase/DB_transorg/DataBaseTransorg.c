@@ -7,6 +7,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 #include <unistd.h>
+#include <string.h>
 
 
 /*Functions
@@ -18,6 +19,7 @@ i2c_data(int, char);*/
 int i2c_fd1;
 int i2c_fd2;
 
+
 unsigned char Slave_Addr1=0x0F;
 unsigned char Slave_Addr2=0x0D;
 
@@ -25,7 +27,8 @@ unsigned char Slave_Addr2=0x0D;
 void ctrl_c(int sig)
 {
 	i2c_close(&i2c_fd1);
-	i2c_close(&i2c_fd2);
+	i2c_close(&i2c_fd1);
+	
 
 	exit(-1);
 }
@@ -43,6 +46,7 @@ int main(int argc, char **argv)
   signal(SIGINT, ctrl_c);
   int i = 0;
   int j = 0;
+  char coordinates[30];
   char latitude[15];
   char longitude[15];
   char temperatura[10];
@@ -73,9 +77,13 @@ int main(int argc, char **argv)
 
    sleep(30);
    i2c_data(&i2c_fd2, temperatura);
+   i2c_close(&i2c_fd2);
    printf("O valor lido e: %s", temperatura);
 	
-
+   i2c_data(&i2c_fd1, coordinates);
+   i2c_close(&i2c_fd1);
+   printf("Coordinates: %s", coordinates);
+   
   
   sprintf(q, "INSERT INTO transorg Values(CURRENT_TIMESTAMP, '%s', '%s', '%s', %d,  %d, %d)", latitude, longitude, temperatura, is_locked, enable, transport_id);
   if (mysql_query(con, q)) {

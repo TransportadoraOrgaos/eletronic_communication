@@ -60,5 +60,6 @@ def delete_data():
 while True:
     get_db_data()
     arduino_post()
+    time.sleep(300)
     delete_data()
     db.close()

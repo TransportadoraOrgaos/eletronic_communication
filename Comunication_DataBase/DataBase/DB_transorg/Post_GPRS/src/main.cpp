@@ -50,7 +50,7 @@ void trackTimeEntry(){
   sprintf(body, recebechar);
   result = http.post("http://transports-rest-api.herokuapp.com/report/50", body, response);
   print(F("HTTP POST: "), result);
-  if (result == SUCCESS) {
+  //if (result == SUCCESS) {
     Serial.println(response);
     StaticJsonBuffer<32> jsonBuffer;
     JsonObject& root = jsonBuffer.parseObject(response);
@@ -59,7 +59,7 @@ void trackTimeEntry(){
 
     print(F("Last run time: "), lastRunTime);
     print(F("Next post in: "), waitForRunTime);
-  }
+  //}
 
 /*  result = http.get("your.domain/api/timing", response);
   print(F("HTTP GET: "), result);

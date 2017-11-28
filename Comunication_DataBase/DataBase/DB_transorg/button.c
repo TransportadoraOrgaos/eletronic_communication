@@ -16,6 +16,119 @@ float timeSleep=0.5;
 char buffer[3];
 char path[35];
 
+
+
+
+void Button (int *retorno, int pin)//*retorno, variavel para retornar os valores de enable e is_locked
+{
+	*retorno = 0;
+
+	int i = 0;
+   	int j = 0;
+
+	// === Verifica se o pino ja foi exportado === //
+	if(access_gpio(pin))
+	{
+		// === Export do Pino === //
+		if (export_gpio(pin))
+		{
+		// === Configurando Direcao do Pino === //
+			if(direction_gpio(pin, INPUT))
+			{
+				//=== Lendo o pino ===//
+        			while(i < 5)
+        			{
+					if((value_in_gpio(pin, LOW) == LOW)) //Button press
+					{
+        	        			delay(timeSleep);
+						printf("Button press %d \n", pin);
+						printf("Enable ativado, caixa em transporte\n");
+						*retorno=1;
+                			}
+					else
+					{
+						delay(timeSleep);
+						printf("Button not press\n");
+					}
+					i++;
+        			}
+			}
+			else
+			{
+				printf("Ocorreu um problema na configuracao do pino como I/O\n");
+				//return 2;
+			}
+		}
+		else
+		{
+			printf("Ocorreu um problema na exportacao do pino!\n");
+			//return 1;
+		}
+
+		// === Desvinculando o pino == //
+
+		if(unexport_gpio(pin))
+		{
+			//return 0;
+		}
+		else
+		{
+			printf("Ocorreu um problema para finalizar a utilizacao do pino\n");
+			//return 1;
+		}
+	}
+	else
+	{
+		printf("Pino ja foi exportado! \n");
+		delay(0.5);
+		printf("Configurando as caracteristicas de utilizacao! \n");
+		delay(0.5);
+
+		if(direction_gpio(pin, INPUT))
+                {
+                                printf("GPIO%d configurada como INPUT! \n", pin);
+                		delay(0.5);
+				printf("Iniciando o processo de leitura\n");
+				delay(0.5);
+				//=== Lendo o pino ===//
+                                while(j < 5)
+                                {
+                                        if((value_in_gpio(pin, LOW) == LOW)) //Button press
+                                        {
+                                                delay(timeSleep);
+                                                printf("Caixa em transporte\n");
+                                                *retorno=1;
+                                        }
+                                        else
+                                        {
+                                                delay(timeSleep);
+                                                printf("Caixa em espera de transporte\n");
+                                        }
+                                }
+		                // === Desvinculando o pino == //
+
+                		if(unexport_gpio(pin))
+                		{
+                		        //return 0;
+                		}
+                		else
+                		{
+                		        printf("Ocorreu um problema para finalizar a utilizacao do pino\n");
+                		        //return 1;
+                		}
+
+		}
+		else
+                {
+                	printf("Ocorreu um problema na configuracao do pino como I/O\n");
+                        //return 2;
+               	}
+	}
+}
+
+
+
+
 bool access_gpio(int pin)
 {
 	int ModAccess;
@@ -86,7 +199,7 @@ int value_in_gpio(int pin, int value)
                 return false;
         }
 	close(arquive);
-	printf("Valor do pino: %c \n", retorno[0]);
+	printf("Valor do pino %d: %c \n", pin, retorno[0]);
 
 	return atoi(retorno);
 }

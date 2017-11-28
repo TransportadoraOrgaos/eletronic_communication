@@ -1,7 +1,7 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-
+#include <stdbool.h>
 //---Macros---//
 
 #define GPIO4 	4

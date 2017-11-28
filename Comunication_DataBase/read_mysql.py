@@ -24,12 +24,12 @@ def get_db_data():
 def arduino_post():
     data = get_db_data()
     
-    payload = "{\n\t\"date\":\""+ str(data[0]) +"\", \n\t\"latitude\":\""+ str(data[1]) +"\", \n\t\"longitude\":\"" + str(data[2]) + "\", \n\t\"temperature\":\"" + str(data[3]) + "\", \n\t\"is_locked\":" + str(data[4]) + ", \n\t\"transport_id\":" + str(data[6]) + ", \n\t\"enable\":"+ str(data[5]) +"\n}"
+    payload = "{\"date\":\""+ str(data[0]) +"\", \"latitude\":\""+ str(data[1]) +"\", \"longitude\":\"" + str(data[2]) + "\", \"temperature\":\"" + str(data[3]) + "\", \"is_locked\":" + str(data[4]) + ", \"transport_id\":" + str(data[6]) + ", \"enable\":"+ str(data[5]) +"} "
 
     
     bus = smbus.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
 
-    requisition_data = payload.split(" ",7)
+    requisition_data = payload.split(", ",7)
 
     x = 0
     while (x < 7):

@@ -7,7 +7,7 @@
 
 
  void i2c_init(char *slave_addr, int *i2c_fd);
- void i2c_data(int *i2c_fd, char *recebido);
+ void i2c_data(int *i2c_fd, char *recebido, const int tam_array);
  void i2c_close(int *i2c_fd);
 
  #endif

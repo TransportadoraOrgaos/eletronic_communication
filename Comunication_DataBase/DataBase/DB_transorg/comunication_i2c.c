@@ -15,12 +15,11 @@ void i2c_init(char *slave_addr, int *i2c_fd){
 
 }
 
-void i2c_data(int *i2c_fd, char *recebido){
+void i2c_data(int *i2c_fd, char *recebido, const int tam_array){
 
-  unsigned char  b[30];
-  
+  unsigned char  b[tam_array];
 
-  read(*i2c_fd, b, 30);
+  read(*i2c_fd, b, tam_array);
 
  strcpy(recebido, b);
 }

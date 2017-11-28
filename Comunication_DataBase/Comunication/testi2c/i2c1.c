@@ -17,7 +17,7 @@ void ctrl_c(int sig)
 
 int main(void)
 {
-	unsigned char user_input=1, ret, slave_addr=0x0F;
+	unsigned char user_input=1, ret[30], slave_addr=0x0F;
 	unsigned char b[15] = "2 -23.345";
 	unsigned char c[15] = "1 2.45";
 	signal(SIGINT, ctrl_c);
@@ -36,13 +36,11 @@ int main(void)
 		else if(user_input>0)
 		{       
 			//write(i2c_fd, &user_input, 1);
-			write(i2c_fd, b, 15);
-			sleep(10);
-			write(i2c_fd, c, 15);
-			sleep(3);
-			//read(i2c_fd, &ret, 1);
+			write(i2c_fd, &user_input,1);
+			sleep(60);
+			read(i2c_fd, ret, 30);
 
-		printf("%c\n", ret);
+		printf("Recebido2: %s\n", ret);
 		}
 		puts("");
 	}

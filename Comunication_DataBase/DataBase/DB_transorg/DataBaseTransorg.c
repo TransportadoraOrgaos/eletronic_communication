@@ -14,7 +14,7 @@
 i2c_close(int fd);
 i2c_init(char, int);
 i2c_data(int, char);*/
-#include "comunication_i2c.h"  
+//#include "comunication_i2c.h"  
 
 int i2c_fd1;
 int i2c_fd2;
@@ -26,8 +26,8 @@ unsigned char Slave_Addr2=0x0D;
 
 void ctrl_c(int sig)
 {
-	i2c_close(&i2c_fd1);
-	i2c_close(&i2c_fd1);
+	//i2c_close(&i2c_fd1);
+	//i2c_close(&i2c_fd1);
 	
 
 	exit(-1);
@@ -47,9 +47,11 @@ int main(int argc, char **argv)
   int i = 0;
   int j = 0;
   char coordinates[30];
+
   char latitude[15] = "-16.45";
   char longitude[15] = "-48.567834";
   char temperatura[10] = "5.34";
+
   int enable = 1;
   int is_locked = 1;
   int transport_id = 50;
@@ -74,6 +76,7 @@ int main(int argc, char **argv)
   if (mysql_query(con, "CREATE TABLE IF NOT EXISTS transorg (Date DATETIME, Latitute TEXT, Longitude TEXT, Temperatura TEXT, Is_Locked INT, Enable INT, Transporte_ID INT)")) {
       finish_with_error(con);
   }
+
 
    /*sleep(30);
    i2c_data(&i2c_fd2, temperatura);

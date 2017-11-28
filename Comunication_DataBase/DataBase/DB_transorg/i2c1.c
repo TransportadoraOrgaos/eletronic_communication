@@ -5,7 +5,7 @@
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 #include <unistd.h>
-#include "coordinate.h"
+
 
 int i2c_fd;
 
@@ -34,22 +34,17 @@ int main(void)
 		if((user_input<0) || (user_input>5))
 			puts("Valor invalido");
 		else if(user_input>0)
-		{       
-			write(i2c_fd, &user_input, 1);
-			sleep(3);
+		{
+			//sleep(4);
 			read(i2c_fd, ret, 15);
-			lat = atof(ret);
-		printf("%f\n", lat);
-		TableCoordinate(lat,12.45);
+			sleep(2);
+
 		printf("%s\n", 	ret);
 		}
 		puts("");
 	}
 
-	lat = atof(ret);
 
-	//TableCoordinate(lat, 12.123456);
-	printf("\nValor da string recebida %f\n",lat);
 	close(i2c_fd);
 	return 0;
 

@@ -19,8 +19,8 @@
 
 //---Macros---//
 
-#define GPIO24 	4
-#define GPIO25	25
+#define GPIO4 	4
+#define GPIO5	5
 
 #define HIGH    1
 #define LOW 	0
@@ -43,7 +43,7 @@ void finalization(int nsingnal);
 //----------------------------//
 
 //---Variaveis Globais--------//
-int arquive, pin=GPIO24;
+int arquive, pin=GPIO4;
 float timeSleep=0.5;
 char buffer[3];
 char path[35];

@@ -29,10 +29,12 @@ def arduino_post():
     
     bus = smbus.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
 
-    requisition_data = payload.split(", ",7)
+
+    requisition_data = payload.split(" ",8)
+
 
     x = 0
-    while (x < 7):
+    while (x < 8):
         data = changeToBytes(requisition_data[x])
         bus.write_i2c_block_data(DEVICE_ADDRESS, DEVICE_REG, data)
         time.sleep(1)

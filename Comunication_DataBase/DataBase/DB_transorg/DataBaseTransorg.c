@@ -14,7 +14,7 @@
 i2c_close(int fd);
 i2c_init(char, int);
 i2c_data(int, char);*/
-#include "comunication_i2c.h"  
+//#include "comunication_i2c.h"  
 
 int i2c_fd1;
 int i2c_fd2;
@@ -26,8 +26,8 @@ unsigned char Slave_Addr2=0x0D;
 
 void ctrl_c(int sig)
 {
-	i2c_close(&i2c_fd1);
-	i2c_close(&i2c_fd1);
+	//i2c_close(&i2c_fd1);
+	//i2c_close(&i2c_fd1);
 	
 
 	exit(-1);
@@ -47,17 +47,17 @@ int main(int argc, char **argv)
   int i = 0;
   int j = 0;
   char coordinates[30];
-  char latitude[15];
-  char longitude[15];
-  char temperatura[10];
-  int enable;
-  int is_locked;
-  int transport_id;
+  char latitude[15] = "34.345345";
+  char longitude[15] = "234.234346";
+  char temperatura[10] = "12.34";
+  int enable = 1;
+  int is_locked = 1;
+  int transport_id = 50;
   char date[15];
   char q[200];
   
-  i2c_init(&Slave_Addr1, &i2c_fd1);
-  i2c_init(&Slave_Addr2, &i2c_fd2);
+  //i2c_init(&Slave_Addr1, &i2c_fd1);
+  //i2c_init(&Slave_Addr2, &i2c_fd2);
 
   if (con == NULL)
   {
@@ -75,14 +75,14 @@ int main(int argc, char **argv)
       finish_with_error(con);
   }
 
-   sleep(30);
-   i2c_data(&i2c_fd2, temperatura);
-   i2c_close(&i2c_fd2);
-   printf("O valor lido e: %s", temperatura);
+   //sleep(30);
+   //i2c_data(&i2c_fd2, temperatura);
+   //i2c_close(&i2c_fd2);
+   //printf("O valor lido e: %s", temperatura);
 	
-   i2c_data(&i2c_fd1, coordinates);
-   i2c_close(&i2c_fd1);
-   printf("Coordinates: %s", coordinates);
+   //i2c_data(&i2c_fd1, coordinates);
+   //i2c_close(&i2c_fd1);
+   //printf("Coordinates: %s", coordinates);
    
   
   sprintf(q, "INSERT INTO transorg Values(CURRENT_TIMESTAMP, '%s', '%s', '%s', %d,  %d, %d)", latitude, longitude, temperatura, is_locked, enable, transport_id);

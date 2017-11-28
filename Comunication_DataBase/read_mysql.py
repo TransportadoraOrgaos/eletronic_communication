@@ -29,7 +29,7 @@ def arduino_post():
     
     bus = smbus.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
 
-    requisition_data = payload.split(" ",7)
+    requisition_data = payload.split(", ",7)
 
     x = 0
     while (x < 7):

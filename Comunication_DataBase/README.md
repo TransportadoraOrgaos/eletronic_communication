@@ -1,5 +1,19 @@
 # PI2
-Pasta criada para codigos relacionados a comunicacao entre a Raspberry Pi e o MSP430 e o envio das variaveis utilizadas na Raspberry para um banco de dados 'transorg'.
+Pasta criada para codigos relacionados a comunicacao entre a Raspberry Pi e os Microcontroladores e o envio das variaveis utilizadas na Raspberry para um banco de dados 'transorg'.
+
+# libraries
+Contem todas as bibliotecas usadas nos trabalho, tanto as do microcontrolador, e a usada na RPI para o uso dos GPIO como entradas.
+
+# Microcontroler_Mega
+Codigo fonte usado no Mega
+
+# Microcontroler_Nano
+Codigo Fonte usado no Nano
+
+# Raspberry_Code
+Codigos usados no RPI, para criacao do banco de dados, recebimentos das variaveis dos microcontroladores, (DataBaseTransorg)
+
+Codigo usado para ler o banco de dados, e formar o json e enviar para o Mega e fazer o post usando o GPRS
 
 # Instalation MySQL
 
@@ -27,6 +41,4 @@ Refs:
 	http://zetcode.com/db/mysqlc/
 
 # OBS.:
-Dentro de DataBase, o creat_db_TransOrg.c, basta ser executado uma unica vez para que haja a criacao do banco de dados transorg.
-O tableTrans.c cria a tabela dentro do banco de dados.
-
+Foi usado o protoloco de comunicacao I2C entre o RPI e os microcontroladores.

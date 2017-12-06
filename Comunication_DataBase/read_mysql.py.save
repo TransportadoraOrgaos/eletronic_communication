@@ -2,6 +2,7 @@ import MySQLdb, smbus, time, os, sys
 
 DEVICE_ADDRESS = 0x0D
 DEVICE_REG = 0x1d
+transportid = [None] * 2
 
 #Obtem o primeiro registro do banco de dados
 def get_db_data():
@@ -17,13 +18,38 @@ def get_db_data():
         db.close()
         return get_db_data()
     else:
+        return dat    db = MySQLdb.connect("localhost", "root", "root", "transorg")
+    global cursor
+    cursor = db.cursor() 
+    cursor.execute("SELECT * FROM transorg")
+    data = cursor.fetchone()
+    if not data:
+        print ("Empty database. Waiting for data...")
+        time.sleep(3)
+        db.close()
+        return get_db_data()
+    else:
         return data
+a
+
+def insert_new_transportid(transport_id):
+	
 
 #Post to ARDUINO
 def arduino_post():
     data = get_db_data()
+    if (transportid[0] == None):
+    	transportid[0] = data[5]
+    elif (transportid[1] == None):
+    	transportid[1] = data[5]
+    else:
+	transportid[0] = transportid[1]
+	transportid[1] = data[5]
 
-    payload = "{\"date\":\""+ str(data[0]) +"\", \"latitude\":\""+ str(data[1]) +"\", \"longitude\":\"" + str(data[2]) + "\", \"temperature\":\"" + str(data[3]) + "\", \"is_locked\":" + str(data[4]) + ", \"transport_id\":" + str(data[6]) + ", \"enable\":"+ str(data[5]) +"} "
+    if(transportid[0] == 0 and transportid[1] == 1):
+	data[6] = data[6] + 1
+	
+    payload = "{\"date\":\""+ str(data[0]) +"\", \"latitude\":\""+ str(data[1]) +"\", \"longitude\":\"" + str(data[2]) + "\", \"temperature\":\"" + str(data[3]) + "\", \"is_locked\":" + str(data[4]) + ", \"transport_id\":" + transport_id + ", \"enable\":"+ str(data[5]) +"} "
 
     
     bus = smbus.SMBus(1)    # 0 = /dev/i2c-0 (port I2C0), 1 = /dev/i2c-1 (port I2C1)
@@ -62,7 +88,7 @@ while True:
     os.system('sudo ./DataBaseTransorg')
     get_db_data()
     arduino_post()
-    time.sleep(90)
+    time.sleep(120)
     delete_data()
     db.close()
 
